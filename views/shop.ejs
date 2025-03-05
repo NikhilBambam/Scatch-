@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Styles */
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <%- include("./partials/header") %>
+
+    <% if(success.length > 0){ %>
+        <div class="fixed top-5 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-4 py-3 rounded-lg shadow-lg">
+            <span><%= success %></span>
+        </div>
+    <% } %>
+
+    <div class="flex w-full min-h-screen px-6 py-10 bg-gray-100">
+
+        <!-- Sidebar -->
+        <div class="w-1/4 bg-white shadow-lg p-6 rounded-lg">
+            <h3 class="text-xl font-semibold mb-6">Sort By</h3>
+            <form action="/shop" class="mb-8">
+                <select class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                    <option value="popular">Popular</option>
+                    <option value="newest">Newest</option>
+                </select>
+            </form>
+
+            <h3 class="text-xl font-semibold mb-6">Categories</h3>
+            <ul class="space-y-4">
+                <li><a href="#" class="text-blue-500 hover:underline">New Collection</a></li>
+                <li><a href="#" class="text-blue-500 hover:underline">All Products</a></li>
+                <li><a href="#" class="text-blue-500 hover:underline">Discounted Products</a></li>
+            </ul>
+
+            <div class="mt-12">
+                <h3 class="text-xl font-semibold mb-4">Filters</h3>
+                <ul class="space-y-4">
+                    <li><a href="#" class="text-blue-500 hover:underline">Availability</a></li>
+                    <li><a href="#" class="text-blue-500 hover:underline">Discount</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Product List -->
+        <div class="w-3/4 pl-8 space-y-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <% products.forEach(function(product){ %>
+                    <div class="card bg-white overflow-hidden rounded-lg">
+                        <div class="w-full h-52 flex justify-center items-center bg-[<%= product.bgcolor %>]">
+                            <img class="h-[12rem] object-contain" src="data:image/jpeg;base64,<%= product.image.toString('base64') %>" alt="<%= product.name %>">
+                        </div>
+                        <div class="flex justify-between items-center bg-[<%= product.panelcolor %>] text-[<%= product.textcolor %>] px-6 py-4">
+                            <div>
+                                <h3 class="font-semibold text-lg"><%= product.name %></h3>
+                                <h4 class="text-xl font-bold">₹ <%= product.price %></h4>
+                            </div>
+                            <a class="w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-lg text-gray-800 hover:bg-gray-200 transition"
+                               href="/addtocart/<%= product._id %>">
+                                <i class="ri-add-line text-lg"></i>
+                            </a>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+
+    <%- include('./partials/footer') %>
+
+</body>
+</html>
