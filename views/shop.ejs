@@ -3,83 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shop</title>
+    <title>Shop | Discover Amazing Products</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Add Remixicon CDN for icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
     <style>
-        /* Custom Styles */
-        .card {
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        
+        .product-card {
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+        
+        .flash-message {
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .search-bar {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .search-bar:focus-within {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+        
+        /* Animation delay for product cards */
+        .product-card {
+            animation-delay: calc(var(--order) * 0.1s);
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-100 font-sans">
 
     <%- include("./partials/header") %>
 
     <% if(success.length > 0){ %>
-        <div class="fixed top-5 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-4 py-3 rounded-lg shadow-lg">
+        <div id="flash-message" class="fixed top-5 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg flash-message flex items-center z-50">
             <span><%= success %></span>
+            <button onclick="hideFlashMessage()" class="ml-4 hover:bg-blue-600 rounded-full p-1 transition">
+                <i class="ri-close-line"></i>
+            </button>
         </div>
     <% } %>
 
-    <div class="flex w-full min-h-screen px-6 py-10 bg-gray-100">
-
-        <!-- Sidebar -->
-        <div class="w-1/4 bg-white shadow-lg p-6 rounded-lg">
-            <h3 class="text-xl font-semibold mb-6">Sort By</h3>
-            <form action="/shop" class="mb-8">
-                <select class="w-full border border-gray-300 rounded-lg px-4 py-2">
-                    <option value="popular">Popular</option>
-                    <option value="newest">Newest</option>
-                </select>
-            </form>
-
-            <h3 class="text-xl font-semibold mb-6">Categories</h3>
-            <ul class="space-y-4">
-                <li><a href="#" class="text-blue-500 hover:underline">New Collection</a></li>
-                <li><a href="#" class="text-blue-500 hover:underline">All Products</a></li>
-                <li><a href="#" class="text-blue-500 hover:underline">Discounted Products</a></li>
-            </ul>
-
-            <div class="mt-12">
-                <h3 class="text-xl font-semibold mb-4">Filters</h3>
-                <ul class="space-y-4">
-                    <li><a href="#" class="text-blue-500 hover:underline">Availability</a></li>
-                    <li><a href="#" class="text-blue-500 hover:underline">Discount</a></li>
-                </ul>
+    <main class="w-full min-h-screen px-4 md:px-8 py-12 bg-zinc-500 bg-opacity-10">
+        <!-- Hero Section with Search -->
+        <div class="max-w-7xl mx-auto mb-12 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Discover Our Collection</h1>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-8">Find the perfect products for your needs</p>
+            
+            <!-- Search Bar -->
+            <div class="max-w-2xl mx-auto relative">
+                <div class="search-bar bg-white rounded-full px-6 py-3 flex items-center">
+                    <i class="ri-search-line text-gray-400 text-xl mr-3"></i>
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        placeholder="Search products by name..." 
+                        class="flex-grow outline-none text-gray-700 placeholder-gray-400"
+                    >
+                    <button id="clear-search" class="ml-2 text-gray-400 hover:text-gray-600 hidden">
+                        <i class="ri-close-line"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- Product List -->
-        <div class="w-3/4 pl-8 space-y-8">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <% products.forEach(function(product){ %>
-                    <div class="card bg-white overflow-hidden rounded-lg">
-                        <div class="w-full h-52 flex justify-center items-center bg-[<%= product.bgcolor %>]">
-                            <img class="h-[12rem] object-contain" src="data:image/jpeg;base64,<%= product.image.toString('base64') %>" alt="<%= product.name %>">
+        <!-- Product Grid -->
+        <div class="max-w-7xl mx-auto">
+            <!-- Product Count -->
+            <div class="mb-6 flex justify-between items-center">
+                <h2 class="text-xl font-semibold text-gray-700">
+                    <span id="product-count"><%= products.length %></span> Products Available
+                </h2>
+            </div>
+            
+            <!-- Products -->
+            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <% products.forEach(function(product, index){ %>
+                    <div 
+                        class="product-card bg-white overflow-hidden"
+                        style="--order: <%= index %>;"
+                        data-name="<%= product.name.toLowerCase() %>"
+                    >
+                        <div class="w-full h-64 flex justify-center items-center" style="background-color: <%= product.bgcolor || '#ffffff' %>">
+                            <img 
+                                class="h-48 w-full object-contain transform hover:scale-105 transition duration-300" 
+                                src="data:image/jpeg;base64,<%= product.image.toString('base64') %>" 
+                                alt="<%= product.name %>"
+                                loading="lazy"
+                            >
                         </div>
-                        <div class="flex justify-between items-center bg-[<%= product.panelcolor %>] text-[<%= product.textcolor %>] px-6 py-4">
+                        <div 
+                            class="flex justify-between items-center px-6 py-4" 
+                            style="background-color: <%= product.panelcolor %>; color: <%= product.textcolor %>"
+                        >
                             <div>
                                 <h3 class="font-semibold text-lg"><%= product.name %></h3>
-                                <h4 class="text-xl font-bold">₹ <%= product.price %></h4>
+                                <h4 class="text-xl font-bold">₹<%= product.price %></h4>
                             </div>
-                            <a class="w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-lg text-gray-800 hover:bg-gray-200 transition"
-                               href="/addtocart/<%= product._id %>">
+                            <a 
+                                class="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 shadow-md hover:bg-white hover:shadow-lg transition-all"
+                                href="/addtocart/<%= product._id %>"
+                                aria-label="Add <%= product.name %> to cart"
+                            >
                                 <i class="ri-add-line text-lg"></i>
                             </a>
                         </div>
                     </div>
                 <% }) %>
             </div>
+            
+            <!-- Empty State -->
+            <div id="empty-state" class="hidden text-center py-16">
+                <div class="max-w-md mx-auto">
+                    <i class="ri-search-eye-line text-5xl text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-medium text-gray-600 mb-2">No products found</h3>
+                    <p class="text-gray-500">Try adjusting your search or filter to find what you're looking for.</p>
+                </div>
+            </div>
         </div>
-    </div>
+    </main>
 
     <%- include('./partials/footer') %>
 
+    <script>
+        // Auto-hide flash message after 3 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const flashMessage = document.getElementById('flash-message');
+            if (flashMessage) {
+                setTimeout(() => {
+                    flashMessage.style.opacity = '0';
+                    setTimeout(() => flashMessage.remove(), 500); // Remove after fade out
+                }, 3000);
+            }
+
+            // Search functionality
+            const searchInput = document.getElementById('search-input');
+            const clearSearch = document.getElementById('clear-search');
+            const productCards = document.querySelectorAll('.product-card');
+            const productGrid = document.getElementById('product-grid');
+            const emptyState = document.getElementById('empty-state');
+            const productCount = document.getElementById('product-count');
+
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                let visibleCount = 0;
+                
+                // Show/hide clear button
+                if (searchTerm.length > 0) {
+                    clearSearch.classList.remove('hidden');
+                } else {
+                    clearSearch.classList.add('hidden');
+                }
+                
+                // Filter products
+                productCards.forEach(card => {
+                    const productName = card.getAttribute('data-name');
+                    if (productName.includes(searchTerm)) {
+                        card.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // Update product count
+                productCount.textContent = visibleCount;
+                
+                // Show empty state if no products match
+                if (visibleCount === 0 && searchTerm.length > 0) {
+                    emptyState.classList.remove('hidden');
+                    productGrid.classList.add('hidden');
+                } else {
+                    emptyState.classList.add('hidden');
+                    productGrid.classList.remove('hidden');
+                }
+            });
+            
+            // Clear search
+            clearSearch.addEventListener('click', function() {
+                searchInput.value = '';
+                searchInput.dispatchEvent(new Event('input'));
+                searchInput.focus();
+            });
+        });
+
+        // Manual close function
+        function hideFlashMessage() {
+            const flashMessage = document.getElementById('flash-message');
+            if (flashMessage) {
+                flashMessage.style.opacity = '0';
+                setTimeout(() => flashMessage.remove(), 500);
+            }
+        }
+    </script>
 </body>
 </html>
