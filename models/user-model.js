@@ -1,6 +1,16 @@
-const mongoose =require('mongoose');
 
-mongoose.connect("mongodb://127.0.0.1:27017/scatch");
+require('dotenv').config();
+const mongoose = require('mongoose');
+
+const mongoURI = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.jtrcpad.mongodb.net/scatch?retryWrites=true&w=majority&appName=Cluster0`;
+
+
+mongoose.connect(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('✅ MongoDB connected successfully'))
+.catch(err => console.error('❌ MongoDB connection error:', err));
 
 const userSchema = mongoose.Schema({
     fullname : {
