@@ -1,8 +1,9 @@
 
-const config = require('config');
+require('dotenv').config();
 const mongoose = require('mongoose');
 
-const mongoURI = config.get('MONGODB_URI');
+const mongoURI = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.jtrcpad.mongodb.net/scatch?retryWrites=true&w=majority&appName=Cluster0`;
+
 
 mongoose.connect(mongoURI)
 .then(() => console.log('✅ MongoDB connected successfully'))
