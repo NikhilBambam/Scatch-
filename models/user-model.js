@@ -2,10 +2,10 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 
-const mongoDBURI = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.jtrcpad.mongodb.net/scatch?retryWrites=true&w=majority&appName=Cluster0`;
+const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.jtrcpad.mongodb.net/scatch?retryWrites=true&w=majority&appName=Cluster0`;
 
 
-mongoose.connect(mongoDBURI)
+mongoose.connect(MONGODB_URI)
 .then(() => console.log('✅ MongoDB connected successfully'))
 .catch(err => console.error('❌ MongoDB connection error:', err));
 
