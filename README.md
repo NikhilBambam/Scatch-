@@ -29,8 +29,10 @@ A complete backend solution for a bag e-commerce platform where admins manage in
 |--------|------------------------|---------------------------------|
 | POST   | `/register`            | User registration               |
 | POST   | `/login`               | User login                      |
-| GET    | `/owners/admin`        | Admin panel for managing bags   |
-| POST   | `/owners/admin/add-bag`| Add new bag (Admin only)        |
+| POST   | `/owners/admin`        | Add new bag                     |
+| GET    | `/cart`                | Add to cart                     |
+| GET    | `/shop`                | shop page                       |
+
 
 ## 🛠️ Installation & Usage  
 
@@ -50,7 +52,7 @@ A complete backend solution for a bag e-commerce platform where admins manage in
 
 4. Start the server:
 
-   nodemon app.js
+   node app.js
 
 Demo Login (For Testing)
 
